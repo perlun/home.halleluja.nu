@@ -26,9 +26,18 @@ fun main(args: Array<String>) {
     staticFiles.location("/public")
 
     // TODO: find a way to serve out public/index.html from /home and /uptime also, so we can support permalinking.
+    // It works in the deployed version, since it's handled by nginx there.
     get(path = "/uprecords") {
         val output = "uprecords".runCommand(File("."));
-        //output = "foo";
-        output ?: "Getting uptime data failed"
+
+        if (output == null) {
+            "Getting uptime data failed"
+        }
+        else {
+            // Very ugly hack, but... works.
+            output
+                .replace("\u001B[1m", "<b>")
+                .replace("\u001B[0m", "</b>")
+        }
     }
 }
